@@ -1,4 +1,6 @@
-package com.stripe.recipe;
+package com.stripe.sample;
+
+import java.nio.file.Paths;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +8,7 @@ import java.util.Map;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.port;
+import static spark.Spark.staticFiles;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -30,6 +33,7 @@ public class Server {
     public static void main(String[] args) {
         port(4242);
         Stripe.apiKey = System.getenv("STRIPE_SECRET_KEY");
+        staticFiles.externalLocation(Paths.get(Paths.get("").toAbsolutePath().toString(),System.getenv("STATIC_DIR")).normalize().toString());
 
         get("/", (request, response) -> {
             response.type("application/json");
