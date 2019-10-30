@@ -18,6 +18,8 @@ import com.stripe.model.Event;
 import com.stripe.exception.*;
 import com.stripe.net.Webhook;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class Server {
     private static Gson gson = new Gson();
 
@@ -32,8 +34,10 @@ public class Server {
 
     public static void main(String[] args) {
         port(4242);
-        Stripe.apiKey = System.getenv("STRIPE_SECRET_KEY");
-        staticFiles.externalLocation(Paths.get(Paths.get("").toAbsolutePath().toString(),System.getenv("STATIC_DIR")).normalize().toString());
+        Dotenv dotenv = Dotenv.load();
+        Stripe.apiKey = dotenv.get("STRIPE_SECRET_KEY");
+        staticFiles.externalLocation(
+                Paths.get(Paths.get("").toAbsolutePath().toString(), dotenv.get("STATIC_DIR")).normalize().toString());
 
         get("/", (request, response) -> {
             response.type("application/json");
