@@ -32,7 +32,7 @@ app.post("/", async (req, res) => {
 });
 
 app.get("/publishable-key", (req, res) => {
-  res.send({ publicKey: process.env.STRIPE_PUBLISHABLE_KEY });
+  res.send({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
 });
 
 // Webhook handler for asynchronous events.
