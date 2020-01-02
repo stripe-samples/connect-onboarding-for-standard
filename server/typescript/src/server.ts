@@ -39,7 +39,7 @@ app.post(
   "/webhook",
   bodyParser.raw({ type: "application/json" }),
   (req, res) => {
-    let data: Stripe.Event.Data | object;
+    let data: Stripe.Event.Data;
     let eventType: string;
 
     // Retrieve the event by verifying the signature using the raw body and secret.
@@ -61,7 +61,8 @@ app.post(
     eventType = event.type;
 
     if (eventType === "payment_intent.succeeded") {
-      console.log(`🔔  Webhook received: ${eventType}!`);
+      const pi: Stripe.PaymentIntent = data.object as Stripe.PaymentIntent;
+      console.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
     }
 
     res.sendStatus(200);
