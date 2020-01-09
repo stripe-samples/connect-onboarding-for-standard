@@ -1,10 +1,10 @@
 // Env variable path defined in .env.ts file.
+import { resolve } from "path";
 import "./env";
 
-import { resolve } from "path";
-
+import bodyParser from "body-parser";
 import express from "express";
-const app = express();
+const app: express.Application = express();
 
 // Initialise Stripe with Typescript.
 import Stripe from "stripe";
@@ -14,53 +14,77 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 app.use(express.static(process.env.STATIC_DIR));
-// Use body-parser to retrieve the raw body as a buffer
-import bodyParser from "body-parser";
+// Only use the raw body parser for webhooks
+app.use(
+  (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ): void => {
+    if (req.originalUrl === "/webhook") {
+      next();
+    } else {
+      bodyParser.json()(req, res, next);
+    }
+  }
+);
 
-app.get("/", (req, res) => {
-  const path = resolve(process.env.STATIC_DIR + "/index.html");
-  res.sendFile(path);
-});
+app.get(
+  "/",
+  (_: express.Request, res: express.Response): express.Response | void => {
+    const path = resolve(process.env.STATIC_DIR + "/index.html");
+    res.sendFile(path);
+  }
+);
 
-app.post("/", async (req, res) => {
-  const { data }: { data: object } = req.body;
+app.post(
+  "/",
+  async (
+    req: express.Request,
+    res: express.Response
+  ): Promise<express.Response | void> => {
+    const { data }: { data: object } = req.body;
 
-  res.send({
-    someData: data
-  });
-});
+    res.send({
+      someData: data
+    });
+  }
+);
 
-app.get("/publishable-key", (req, res) => {
-  res.send({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
-});
+app.get(
+  "/publishable-key",
+  (_: express.Request, res: express.Response): express.Response | void => {
+    res.send({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
+  }
+);
 
 // Webhook handler for asynchronous events.
 app.post(
   "/webhook",
+  // Use body-parser to retrieve the raw body as a buffer.
   bodyParser.raw({ type: "application/json" }),
-  (req, res) => {
-    let data: Stripe.Event.Data;
-    let eventType: string;
-
+  (req: express.Request, res: express.Response): express.Response | void => {
     // Retrieve the event by verifying the signature using the raw body and secret.
     let event: Stripe.Event;
+    const webhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET;
     const signature: string = req.headers["stripe-signature"] as string;
 
     try {
       event = stripe.webhooks.constructEvent(
         req.body,
         signature,
-        process.env.STRIPE_WEBHOOK_SECRET
+        webhookSecret
       );
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed.`);
       return res.sendStatus(400);
     }
-    // Extract the object from the event.
-    data = event.data;
-    eventType = event.type;
+    // Extract the data from the event.
+    const data: Stripe.Event.Data = event.data;
+    const eventType: string = event.type;
 
     if (eventType === "payment_intent.succeeded") {
+      // Cast the event into a PaymentIntent to make use of the types.
       const pi: Stripe.PaymentIntent = data.object as Stripe.PaymentIntent;
       console.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
     }
@@ -69,4 +93,6 @@ app.post(
   }
 );
 
-app.listen(4242, () => console.log(`Node server listening on port ${4242}!`));
+app.listen(4242, (): void =>
+  console.log(`Node server listening on port ${4242}!`)
+);
