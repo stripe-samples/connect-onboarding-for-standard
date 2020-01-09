@@ -66,19 +66,18 @@ app.post(
   (req: express.Request, res: express.Response): express.Response | void => {
     // Retrieve the event by verifying the signature using the raw body and secret.
     let event: Stripe.Event;
-    const webhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET;
-    const signature: string = req.headers["stripe-signature"] as string;
 
     try {
       event = stripe.webhooks.constructEvent(
         req.body,
-        signature,
-        webhookSecret
+        req.headers["stripe-signature"],
+        process.env.STRIPE_WEBHOOK_SECRET
       );
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed.`);
       return res.sendStatus(400);
     }
+
     // Extract the data from the event.
     const data: Stripe.Event.Data = event.data;
     const eventType: string = event.type;
