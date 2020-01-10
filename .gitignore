@@ -22,3 +22,6 @@ target/
 .classpath
 .factorypath
 .project
+
+# Typescript
+dist
