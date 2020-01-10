@@ -29,13 +29,10 @@ app.use(
   }
 );
 
-app.get(
-  "/",
-  (_: express.Request, res: express.Response): express.Response | void => {
-    const path = resolve(process.env.STATIC_DIR + "/index.html");
-    res.sendFile(path);
-  }
-);
+app.get("/", (_: express.Request, res: express.Response): void => {
+  const path = resolve(process.env.STATIC_DIR + "/index.html");
+  res.sendFile(path);
+});
 
 app.post(
   "/",
@@ -53,7 +50,7 @@ app.post(
 
 app.get(
   "/publishable-key",
-  (_: express.Request, res: express.Response): express.Response | void => {
+  (_: express.Request, res: express.Response): void => {
     res.send({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
   }
 );
@@ -63,7 +60,7 @@ app.post(
   "/webhook",
   // Use body-parser to retrieve the raw body as a buffer.
   bodyParser.raw({ type: "application/json" }),
-  (req: express.Request, res: express.Response): express.Response | void => {
+  (req: express.Request, res: express.Response): void => {
     // Retrieve the event by verifying the signature using the raw body and secret.
     let event: Stripe.Event;
 
@@ -75,7 +72,8 @@ app.post(
       );
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed.`);
-      return res.sendStatus(400);
+      res.sendStatus(400);
+      return;
     }
 
     // Extract the data from the event.
