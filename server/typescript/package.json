@@ -16,7 +16,7 @@
     "body-parser": "^1.19.0",
     "dotenv": "latest",
     "express": "^4.17.1",
-    "stripe": "https://github.com/stripe/stripe-node/tarball/typescript"
+    "stripe": "^8.0.1"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
