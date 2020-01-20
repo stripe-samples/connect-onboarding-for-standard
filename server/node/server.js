@@ -1,22 +1,21 @@
+// Replace if using a different env file or config
+require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const app = express();
 const { resolve } = require("path");
-// Replace if using a different env file or config
-const env = require("dotenv").config({ path: "./.env" });
+const bodyParser = require("body-parser");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 app.use(express.static(process.env.STATIC_DIR));
-app.use(
-  express.json({
-    // We need the raw body to verify webhook signatures.
-    // Let's compute it only when hitting the Stripe webhook endpoint.
-    verify: function(req, res, buf) {
-      if (req.originalUrl.startsWith("/webhook")) {
-        req.rawBody = buf.toString();
-      }
-    }
-  })
-);
+// Use JSON parser for all non-webhook routes
+app.use((req, res, next) => {
+  if (req.originalUrl === "/webhook") {
+    next();
+  } else {
+    bodyParser.json()(req, res, next);
+  }
+});
 
 app.get("/", (req, res) => {
   const path = resolve(process.env.STATIC_DIR + "/index.html");
@@ -35,41 +34,29 @@ app.get("/publishable-key", (req, res) => {
   res.send({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
 });
 
-// Webhook handler for asynchronous events.
-app.post("/webhook", async (req, res) => {
-  let data;
-  let eventType;
-  // Check if webhook signing is configured.
-  if (process.env.STRIPE_WEBHOOK_SECRET) {
-    // Retrieve the event by verifying the signature using the raw body and secret.
+// Stripe requires the raw body to construct the event
+app.post(
+  "/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res) => {
+    const sig = req.headers["stripe-signature"];
+
     let event;
-    let signature = req.headers["stripe-signature"];
 
     try {
-      event = stripe.webhooks.constructEvent(
-        req.rawBody,
-        signature,
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
+      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
     } catch (err) {
-      console.log(`⚠️  Webhook signature verification failed.`);
-      return res.sendStatus(400);
+      // On error, log and return the error message
+      console.log(`❌ Error message: ${err.message}`);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-    // Extract the object from the event.
-    data = event.data;
-    eventType = event.type;
-  } else {
-    // Webhook signing is recommended, but if the secret is not configured in `config.js`,
-    // retrieve the event data directly from the request body.
-    data = req.body.data;
-    eventType = req.body.type;
-  }
 
-  if (eventType === "some.event") {
-    console.log(`🔔  Webhook received! ${data} succeeded.`);
-  }
+    // Successfully constructed event
+    console.log("✅ Success:", event.id);
 
-  res.sendStatus(200);
-});
+    // Return a response to acknowledge receipt of the event
+    res.json({ received: true });
+  }
+);
 
 app.listen(4242, () => console.log(`Node server listening on port ${4242}!`));
