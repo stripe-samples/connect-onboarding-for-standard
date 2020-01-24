@@ -33,7 +33,7 @@ def post_example():
     try:
         return jsonify({'data': data})
     except Exception as e:
-        return jsonify(e), 403
+        return jsonify(error=str(e)), 403
 
 @app.route('/webhook', methods=['POST'])
 def webhook_received():
