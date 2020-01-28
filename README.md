@@ -1,8 +1,10 @@
 # Stripe Sample Connect Seamless Standard
 
-This is a repo to help you get started with creating a sample.
+This Stripe sample shows you how to use Seamless Standard for easy user onboarding with [Stripe Connect](https://stripe.com/connect).
 
-1. Clone this repository and add the sample specific logic.
+## Getting started
+
+1. Clone this repository
 
 ```
 git clone https://git.corp.stripe.com/auchenberg/stripe-sample-connect-seamless-standard/
@@ -18,18 +20,6 @@ git clone https://git.corp.stripe.com/auchenberg/stripe-sample-connect-seamless-
 
 Below is everything you should include in your original sample README. Everything above should be deleted.
 
-# Name of sample
-
-A brief description of what this sample shows. Keep it 3 - 5 sentences.
-
-A quick screenshot of the demo view:
-<img src="https://cf.ltkcdn.net/dogs/images/std/236742-699x450-cutest-puppy-videos.jpg" alt="Preview of sample" align="center">
-
-Features:
-
-- One cool thing about this sample 😃
-- Another cool thing about the sample 🏋️
-- The final cool thing about the sample 💡
 
 ## How to run locally
 
