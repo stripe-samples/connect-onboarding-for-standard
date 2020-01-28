@@ -1,11 +1,11 @@
-# Stripe Sample Blueprint
+# Stripe Sample Connect Seamless Standard
 
 This is a repo to help you get started with creating a sample.
 
 1. Clone this repository and add the sample specific logic.
 
 ```
-git clone https://git.corp.stripe.com/adreyfus/stripe-sample-template
+git clone https://git.corp.stripe.com/auchenberg/stripe-sample-connect-seamless-standard/
 ```
 
 2. Language specific instructions:
