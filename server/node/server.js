@@ -1,5 +1,5 @@
 // Replace if using a different env file or config
-require("dotenv").config({ path: "./.env" });
+require("dotenv").config({ path: "../../.env" });
 const express = require("express");
 const app = express();
 const { resolve } = require("path");
@@ -8,6 +8,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 app.use(express.static(process.env.STATIC_DIR));
+
 // Use JSON parser for all non-webhook routes
 app.use((req, res, next) => {
   if (req.originalUrl === "/webhook") {
@@ -22,12 +23,30 @@ app.get("/", (req, res) => {
   res.sendFile(path);
 });
 
-app.post("/", async (req, res) => {
-  const { data } = req.body;
+app.post("/onboard-user", async (req, res) => {
+  try {
+    const account = await stripe.accounts.create({
+      type: "standard",
+      business_type: "individual",
+      country: "US",
+      requested_capabilities: ["card_payments", "transfers"]
+    });
 
-  res.send({
-    someData: data
-  });
+    const accountLink = await stripe.accountLinks.create({
+      account: account.id,
+      failure_url: "http://localhost:4242/failure.html",
+      success_url: "http://localhost:4242/success.html",
+      type: "onboarding"
+    });
+
+    res.send({
+      url: accountLink.url
+    });
+  } catch (err) {
+    res.status(500).send({
+      error: err.message
+    });
+  }
 });
 
 app.get("/publishable-key", (req, res) => {
