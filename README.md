@@ -1,6 +1,10 @@
 # Stripe Sample Connect Seamless Standard
 
-This Stripe sample shows you how to use Seamless Standard for easy user onboarding with [Stripe Connect](https://stripe.com/connect).
+This Stripe sample shows you how to use Seamless Standard for easy user on-boarding with [Stripe Connect](https://stripe.com/connect).
+
+Demo url: https://41j2l.sse.codesandbox.io/
+
+Sandbox url: https://codesandbox.io/s/stripe-sample-connect-seamless-standard-41j2l
 
 ## Getting started
 
@@ -20,7 +24,6 @@ git clone https://git.corp.stripe.com/auchenberg/stripe-sample-connect-seamless-
 
 Below is everything you should include in your original sample README. Everything above should be deleted.
 
-
 ## How to run locally
 
 This sample includes 5 server implementations in Node, Ruby, Python, Java, and PHP.
@@ -38,7 +41,7 @@ If you haven't already installed the CLI, follow the [installation steps](https:
 In your terminal shell, run the Stripe CLI command to clone the sample:
 
 ```
-stripe samples create REPLACE-WITH-NAME
+stripe samples create connect-seamless-standard
 ```
 
 The CLI will walk you through picking your integration type, server and client languages, and configuring your .env config file with your Stripe API keys.
@@ -48,7 +51,7 @@ The CLI will walk you through picking your integration type, server and client l
 If you do not want to use the Stripe CLI, you can manually clone and configure the sample yourself:
 
 ```
-git clone https://github.com/stripe-samples/REPLACE-WITH-NAME
+git clone https://github.com/stripe-samples/connect-seamless-standard
 ```
 
 Copy the .env.example file into a file named .env in the folder of the server you want to use. For example:
@@ -116,4 +119,4 @@ A: We are always looking for new sample ideas, please email dev-samples@stripe.c
 
 ## Author(s)
 
-[@adreyfus-stripe](https://twitter.com/adrind)
+[@auchenberg-stripe](https://twitter.com/auchenberg)

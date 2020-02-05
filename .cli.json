@@ -1,12 +1,11 @@
 {
-    "name": "name-of-your-sample",
-    "configureDotEnv": true,
-    "integrations": [
-      {
-        "name": "main",
-        "clients": ["web"],
-        "servers": ["java", "node", "php", "python", "ruby"]
-      }
-    ]
-  }
-  
+  "name": "connect-seamless-standard",
+  "configureDotEnv": true,
+  "integrations": [
+    {
+      "name": "main",
+      "clients": ["web"],
+      "servers": ["java", "node", "php", "python", "ruby"]
+    }
+  ]
+}
