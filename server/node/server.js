@@ -6,6 +6,7 @@ const { resolve } = require("path");
 const bodyParser = require("body-parser");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const port = process.env.PORT || 4242;
 
 app.use(express.static(process.env.STATIC_DIR));
 
@@ -32,10 +33,12 @@ app.post("/onboard-user", async (req, res) => {
       requested_capabilities: ["card_payments", "transfers"]
     });
 
+    let returnUrl = `${req.headers.origin}`;
+
     const accountLink = await stripe.accountLinks.create({
       account: account.id,
-      failure_url: "http://localhost:4242/failure.html",
-      success_url: "http://localhost:4242/success.html",
+      failure_url: `${returnUrl}/failure.html`,
+      success_url: `${returnUrl}/success.html`,
       type: "onboarding"
     });
 
@@ -78,4 +81,4 @@ app.post(
   }
 );
 
-app.listen(4242, () => console.log(`Node server listening on port ${4242}!`));
+app.listen(port, () => console.log(`Node server listening on port ${port}!`));
