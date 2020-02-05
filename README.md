@@ -2,6 +2,8 @@
 
 This Stripe sample shows you how to use Seamless Standard for easy user on-boarding with [Stripe Connect](https://stripe.com/connect).
 
+![demo](.readme/demo.png)
+
 Demo url: https://41j2l.sse.codesandbox.io/
 
 Sandbox url: https://codesandbox.io/s/stripe-sample-connect-seamless-standard-41j2l
