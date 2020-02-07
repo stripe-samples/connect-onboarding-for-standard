@@ -27,42 +27,29 @@ $app->add(function ($request, $response, $next) {
     return $next($request, $response);
 });
   
+$app->post('/onboard-user', function (Request $request, Response $response, array $args) {
+
+  $account = \Stripe\Account::create([
+    'type' => 'standard',
+    'business_type' => 'individual',
+    'country' => 'US',
+    'requested_capabilities' => ['card_payments', 'transfers']
+  ]);
+
+  $return_url = $request->getHeaderLine('Origin');
+
+  $account_link = \Stripe\AccountLink::create([
+    'type' => 'onboarding',
+    'account' => $account->id,
+    'failure_url' => "{$return_url}/failure.html",
+    'success_url' => "{$return_url}/success.html"
+  ]);
+  
+  return $response->withJson(array('url' => $account_link->url));
+});
 
 $app->get('/', function (Request $request, Response $response, array $args) {   
   return $response->write(file_get_contents(getenv('STATIC_DIR') . '/index.html'));
-});
-
-$app->get('/publishable-key', function (Request $request, Response $response, array $args) {
-    $pub_key = getenv('STRIPE_PUBLISHABLE_KEY');
-
-    $response->getBody()->write("Hello, $pub_key");
-    return $response;
-});
-
-$app->post('/webhook', function(Request $request, Response $response) {
-    $logger = $this->get('logger');
-    $event = $request->getParsedBody();
-    // Parse the message body (and check the signature if possible)
-    $webhookSecret = getenv('STRIPE_WEBHOOK_SECRET');
-    if ($webhookSecret) {
-      try {
-        $event = \Stripe\Webhook::constructEvent(
-          $request->getBody(),
-          $request->getHeaderLine('stripe-signature'),
-          $webhookSecret
-        );
-      } catch (\Exception $e) {
-        return $response->withJson([ 'error' => $e->getMessage() ])->withStatus(403);
-      }
-    } else {
-      $event = $request->getParsedBody();
-    }
-    $type = $event['type'];
-    $object = $event['data']['object'];
-  
-    $logger->info('🔔  Webhook received! ' . $type);
-
-    return $response->withJson([ 'status' => 'success' ])->withStatus(200);
 });
 
 $app->run();
