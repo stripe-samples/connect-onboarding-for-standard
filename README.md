@@ -1,4 +1,4 @@
-# Stripe Sample Connect Seamless Standard
+# Seamless User Onboarding for Stripe Connect
 
 This Stripe sample shows you how to use Seamless Standard for easy user on-boarding with [Stripe Connect](https://stripe.com/connect).
 
