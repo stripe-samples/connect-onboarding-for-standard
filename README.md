@@ -2,6 +2,7 @@
 
 This Stripe sample shows you how to use Seamless Standard for easy user on-boarding with [Stripe Connect](https://stripe.com/connect).
 
+Seamless Standard is currently in private Beta. Interested in participating? Indicate your interest by using this [form](https://forms.gle/e59oNyB8YWfE2ddh8).
 ![demo](.readme/demo.png)
 
 Demo url: https://41j2l.sse.codesandbox.io/
