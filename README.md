@@ -8,24 +8,6 @@ Demo url: https://41j2l.sse.codesandbox.io/
 
 Sandbox url: https://codesandbox.io/s/stripe-sample-connect-seamless-standard-41j2l
 
-## Getting started
-
-1. Clone this repository
-
-```
-git clone https://git.corp.stripe.com/auchenberg/stripe-sample-connect-seamless-standard/
-```
-
-2. Language specific instructions:
-
-   - Update the Java artifactId to use a specific sample related name. Update the README with the right package name.
-
-3. Update the sample sample README below and delete this boilerplate text.
-
-4. Update the .cli.json with details on your sample.
-
-Below is everything you should include in your original sample README. Everything above should be deleted.
-
 ## How to run locally
 
 This sample includes 5 server implementations in Node, Ruby, Python, Java, and PHP.
@@ -82,32 +64,6 @@ cd server/node # there's a README in this folder with instructions
 npm install
 npm start
 ```
-
-**3. [Optional] Run a webhook locally:**
-
-If you want to test the `using-webhooks` integration with a local webhook on your machine, you can use the Stripe CLI to easily spin one up.
-
-Make sure to [install the CLI](https://stripe.com/docs/stripe-cli) and [link your Stripe account](https://stripe.com/docs/stripe-cli#link-account).
-
-```
-stripe listen --forward-to localhost:4242/webhook
-```
-
-The CLI will print a webhook secret key to the console. Set `STRIPE_WEBHOOK_SECRET` to this value in your .env file.
-
-You should see events logged in the console where the CLI is running.
-
-When you are ready to create a live webhook endpoint, follow our guide in the docs on [configuring a webhook endpoint in the dashboard](https://stripe.com/docs/webhooks/setup#configure-webhook-settings).
-
-**4. [Mobile clients] Set up the client app:**
-
-Finally, choose a mobile client implementation and follow the instruction in the app's README (e.g. `using-webhooks/client/ios/README.md`) to run.
-
-When the app is running, use `4242424242424242` as a test card number with any CVC code + a future expiration date.
-
-Use the `4000000000003220` test card number to trigger a 3D Secure challenge flow.
-
-Read more about testing on Stripe at https://stripe.com/docs/testing.
 
 ## FAQ
 
