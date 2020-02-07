@@ -11,24 +11,28 @@ import static spark.Spark.port;
 import static spark.Spark.staticFiles;
 
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 
 import com.stripe.Stripe;
-import com.stripe.model.Event;
+
 import com.stripe.exception.*;
-import com.stripe.net.Webhook;
 
 import io.github.cdimascio.dotenv.Dotenv;
+
+import com.stripe.param.AccountCreateParams;
+import com.stripe.param.AccountLinkCreateParams;
+import com.stripe.param.AccountCreateParams.RequestedCapability;
+import com.stripe.param.AccountCreateParams.Type;
+import com.stripe.model.AccountLink;
+import com.stripe.model.Account;
 
 public class Server {
     private static Gson gson = new Gson();
 
-    static class PostBody {
-        @SerializedName("some_field")
-        String someField;
+    static class CreateResponse {
+        private String url;
 
-        public String getSomeField() {
-            return someField;
+        public CreateResponse(String url) {
+            this.url = url;
         }
     }
 
@@ -47,46 +51,27 @@ public class Server {
             return gson.toJson(responseData);
         });
 
-        post("/post", (request, response) -> {
-            PostBody postBody = gson.fromJson(request.body(), PostBody.class);
-
+        post("/onboard-user", (request, response) -> {
             response.type("application/json");
-            System.out.println(postBody.getSomeField());
-            if (postBody.getSomeField().equals("something")) {
-                return "{\"data\": \"something \"}";
-            } else {
-                return "{\"data\": \"nothing \"}";
-            }
+
+            AccountCreateParams createAccountParams = new AccountCreateParams.Builder().setType(Type.STANDARD)
+                    .setCountry("US").addRequestedCapability(RequestedCapability.CARD_PAYMENTS)
+                    .addRequestedCapability(RequestedCapability.PLATFORM_PAYMENTS).setBusinessType("individual")
+                    .build();
+
+            Account account = Account.create(createAccountParams);
+
+            String returnUrl = request.headers("origin");
+
+            AccountLinkCreateParams createAccountLinkParams = new AccountLinkCreateParams.Builder()
+                    .setAccount(account.getId()).setType("onboarding")
+                    .setFailureUrl(String.format("%s/faliure.html", returnUrl))
+                    .setSuccessUrl(String.format("%s/success.html", returnUrl)).build();
+
+            AccountLink accoutLink = AccountLink.create(createAccountLinkParams);
+
+            return gson.toJson(new CreateResponse(accoutLink.getUrl()));
         });
 
-        post("/webhook", (request, response) -> {
-            System.out.println("Webhook");
-            String payload = request.body();
-            String sigHeader = request.headers("Stripe-Signature");
-            String endpointSecret = System.getenv("STRIPE_WEBHOOK_SECRET");
-
-            Event event = null;
-
-            try {
-                event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
-            } catch (SignatureVerificationException e) {
-                // Invalid signature
-                response.status(400);
-                return "";
-            }
-
-            switch (event.getType()) {
-            case "payment_intent.succeeded":
-                System.out.println("Received event");
-                break;
-            default:
-                // Unexpected event type
-                response.status(400);
-                return "";
-            }
-
-            response.status(200);
-            return "";
-        });
     }
 }
