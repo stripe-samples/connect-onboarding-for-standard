@@ -1,5 +1,5 @@
 {
-  "name": "stripe-sample-connect-seamless-standard",
+  "name": "stripe-sample-connect-onboarding-for-standard",
   "version": "1.0.0",
   "description": "A Stripe demo",
   "main": "server.js",
@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "stripe-demos",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
     "dotenv": "^8.0.0",

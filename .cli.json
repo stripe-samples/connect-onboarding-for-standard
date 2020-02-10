@@ -1,5 +1,5 @@
 {
-  "name": "connect-seamless-standard",
+  "name": "connect-onboarding-for-standard",
   "configureDotEnv": true,
   "integrations": [
     {
