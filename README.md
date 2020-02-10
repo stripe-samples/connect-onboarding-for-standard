@@ -1,6 +1,6 @@
 # Connect Onboarding for Standard accounts
 
-This Stripe sample shows you how to use Connect Onboarding for Standard for seamless user on-boarding with Stripe Connect](https://stripe.com/connect).
+This Stripe sample shows you how to use Connect Onboarding for Standard for seamless user on-boarding with [Stripe Connect](https://stripe.com/connect).
 
 Connect Onboarding for Standard is currently in private Beta. Interested in participating? Indicate your interest by using [form](https://forms.gle/e59oNyB8YWfE2ddh8).
 
