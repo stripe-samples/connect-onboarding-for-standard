@@ -20,7 +20,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 import com.stripe.param.AccountCreateParams;
 import com.stripe.param.AccountLinkCreateParams;
-import com.stripe.param.AccountCreateParams.RequestedCapability;
 import com.stripe.param.AccountCreateParams.Type;
 import com.stripe.model.AccountLink;
 import com.stripe.model.Account;
@@ -55,8 +54,7 @@ public class Server {
             response.type("application/json");
 
             AccountCreateParams createAccountParams = new AccountCreateParams.Builder().setType(Type.STANDARD)
-                    .setCountry("US").addRequestedCapability(RequestedCapability.CARD_PAYMENTS)
-                    .addRequestedCapability(RequestedCapability.PLATFORM_PAYMENTS).setBusinessType("individual")
+                    .setCountry("US")
                     .build();
 
             Account account = Account.create(createAccountParams);

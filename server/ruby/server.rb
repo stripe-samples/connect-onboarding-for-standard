@@ -30,8 +30,7 @@ post '/onboard-user' do
   account = Stripe::Account.create(
     type: 'standard',
     business_type: 'individual',
-    country: 'US',
-    requested_capabilities: ['card_payments', 'transfers']
+    country: 'US'
   )
 
   return_url = request_headers['origin']

@@ -29,8 +29,7 @@ app.post("/onboard-user", async (req, res) => {
     const account = await stripe.accounts.create({
       type: "standard",
       business_type: "individual",
-      country: "US",
-      requested_capabilities: ["card_payments", "transfers"]
+      country: "US"
     });
 
     let returnUrl = `${req.headers.origin}`;

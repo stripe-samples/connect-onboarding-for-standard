@@ -32,8 +32,7 @@ def onboard_user():
     account = stripe.Account.create(
         type='standard',
         business_type='individual',
-        country='US',
-        requested_capabilities=['card_payments', 'transfers']
+        country='US'
     )
 
     return_url = request.headers['origin']
