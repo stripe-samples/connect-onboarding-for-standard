@@ -3,7 +3,7 @@
 ## Requirements
 * Python 3.6+
 * pipenv
-
+* [Configured .env file](../README.md)
 
 ## How to run
 
