@@ -1,32 +1,19 @@
 # Name of sample
 
 ## Requirements
-* Python 3 
-* [Configured .env file](../README.md)
+* Python 3.6+
+* pipenv
 
 
 ## How to run
 
 1. Create and activate a new virtual environment
 
-**On Linux / Unix / MacOS**
-
-```
-python3 -m venv /path/to/new/virtual/environment
-source /path/to/new/virtual/environment/venv/bin/activate
-```
-
-**On Windows** (PowerShell)
-
-```
-python3 -m venv /path/to/new/virtual/environment
-.\venv\Scripts\activate.bat
-```
-
-2. Install dependencies
-
-```
-pip install -r requirements.txt
+```sh
+# If you don't have pipenv installed, install it
+pip install pipenv
+# Run `pipenv install` to install requirements
+pipenv install
 ```
 
 3. Export and run the application
@@ -34,6 +21,7 @@ pip install -r requirements.txt
 **On Linux / Unix / MacOS**
 
 ```
+pipenv shell
 export FLASK_APP=server.py
 python3 -m flask run --port=4242
 ```
@@ -41,6 +29,7 @@ python3 -m flask run --port=4242
 **On Windows** (PowerShell)
 
 ```
+pipenv shell
 $env:FLASK_APP=“server.py"
 python3 -m flask run --port=4242
 ```
