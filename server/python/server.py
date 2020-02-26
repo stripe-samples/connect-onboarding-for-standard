@@ -33,7 +33,6 @@ def get_example():
 
 @app.route('/onboard-user', methods=['POST'])
 def onboard_user():
-    
     account = stripe.Account.create(
         type='standard',
         business_type='individual',
