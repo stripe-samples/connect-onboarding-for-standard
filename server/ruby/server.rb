@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stripe'
 require 'sinatra'
 require 'dotenv'
@@ -6,18 +8,16 @@ require 'dotenv'
 Dotenv.load
 Stripe.api_key = ENV['STRIPE_SECRET_KEY']
 
+enable :sessions
 set :static, true
 set :public_folder, File.join(File.dirname(__FILE__), ENV['STATIC_DIR'])
 set :port, 4242
 
 helpers do
-
   def request_headers
-    env.inject({}){|acc, (k,v)| acc[$1.downcase] = v if k =~ /^http_(.*)/i; acc}
-  end  
-
+    env.each_with_object({}) { |(k, v), acc| acc[Regexp.last_match(1).downcase] = v if k =~ /^http_(.*)/i; }
+  end
 end
-
 
 get '/' do
   content_type 'text/html'
@@ -26,20 +26,22 @@ end
 
 post '/onboard-user' do
   content_type 'application/json'
-  
+
   account = Stripe::Account.create(
     type: 'standard',
     business_type: 'individual',
     country: 'US'
   )
 
-  return_url = request_headers['origin']
-    
+  session[:account_id] = account.id
+
+  origin = request_headers['origin']
+
   account_link = Stripe::AccountLink.create(
-      type: 'onboarding',
-      account: account.id,
-      failure_url: "#{return_url}/failure.html",
-      success_url: "#{return_url}/success.html"
+    type: 'onboarding',
+    account: account.id,
+    failure_url: "#{origin}/onboard-user/refresh",
+    success_url: "#{origin}/success.html"
   )
 
   {
@@ -47,27 +49,18 @@ post '/onboard-user' do
   }.to_json
 end
 
+get '/onboard-user/refresh' do
+  redirect '/' if session[:account_id].nil?
 
+  account_id = session[:account_id]
+  origin = "http://#{request_headers['host']}"
 
-# app.post("/onboard-user", async (req, res) => {
-#   try {
-#     const account = await stripe.accounts.create({
+  account_link = Stripe::AccountLink.create(
+    type: 'onboarding',
+    account: account_id,
+    failure_url: "#{origin}/onboard-user/refresh",
+    success_url: "#{origin}/success.html"
+  )
 
-#     });
-
-#     let returnUrl = `${req.headers.origin}`;
-
-#     const accountLink = await stripe.accountLinks.create({
-
-#     });
-
-#     res.send({
-#       url: accountLink.url
-#     });
-#   } catch (err) {
-#     res.status(500).send({
-#       error: err.message
-#     });
-#   }
-# });
-
+  redirect account_link.url
+end
