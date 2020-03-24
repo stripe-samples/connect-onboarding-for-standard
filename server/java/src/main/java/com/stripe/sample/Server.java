@@ -11,9 +11,7 @@ import static spark.Spark.port;
 import static spark.Spark.staticFiles;
 
 import com.google.gson.Gson;
-
 import com.stripe.Stripe;
-
 import com.stripe.exception.*;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -36,6 +34,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
+
         port(4242);
         Dotenv dotenv = Dotenv.load();
         Stripe.apiKey = dotenv.get("STRIPE_SECRET_KEY");
@@ -54,22 +53,52 @@ public class Server {
             response.type("application/json");
 
             AccountCreateParams createAccountParams = new AccountCreateParams.Builder().setType(Type.STANDARD)
-                    .setCountry("US")
-                    .build();
+                    .setCountry("US").build();
 
             Account account = Account.create(createAccountParams);
+            request.session().attribute("account_id", account.getId());
 
-            String returnUrl = request.headers("origin");
+            String origin = request.headers("origin");
+            String accountID = account.getId();
 
             AccountLinkCreateParams createAccountLinkParams = new AccountLinkCreateParams.Builder()
-                    .setAccount(account.getId()).setType("onboarding")
-                    .setFailureUrl(String.format("%s/faliure.html", returnUrl))
-                    .setSuccessUrl(String.format("%s/success.html", returnUrl)).build();
+                    .setAccount(accountID).setType("onboarding")
+                    .setFailureUrl(String.format("%s/onboard-user/refresh", origin))
+                    .setSuccessUrl(String.format("%s/success.html", origin)).build();
 
-            AccountLink accoutLink = AccountLink.create(createAccountLinkParams);
+            AccountLink accountLink = AccountLink.create(createAccountLinkParams);
 
-            return gson.toJson(new CreateResponse(accoutLink.getUrl()));
+            String accountLinkUrl = accountLink.getUrl();
+
+            return gson.toJson(new CreateResponse(accountLinkUrl));
+        });
+
+        get("/onboard-user/refresh", (request, response) -> {
+
+            String sessionAccountId = request.session().attribute("account_id");
+
+            if (sessionAccountId == null) {
+                response.redirect("/");
+                return "";
+            } else {
+
+                String origin = String.format("http://%s", request.headers("host"));
+
+                AccountLinkCreateParams createAccountLinkParams = new AccountLinkCreateParams.Builder()
+                        .setAccount(sessionAccountId).setType("onboarding")
+                        .setFailureUrl(String.format("%s/onboard-user/refresh", origin))
+                        .setSuccessUrl(String.format("%s/success.html", origin)).build();
+
+                AccountLink accountLink = AccountLink.create(createAccountLinkParams);
+
+                String accountLinkUrl = accountLink.getUrl();
+
+                response.redirect(accountLinkUrl);
+
+                return "";
+            }
         });
 
     }
+
 }
