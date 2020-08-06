@@ -52,8 +52,7 @@ public class Server {
         post("/onboard-user", (request, response) -> {
             response.type("application/json");
 
-            AccountCreateParams createAccountParams = new AccountCreateParams.Builder().setType(Type.STANDARD)
-                    .setCountry("US").build();
+            AccountCreateParams createAccountParams = new AccountCreateParams.Builder().setType(Type.STANDARD).build();
 
             Account account = Account.create(createAccountParams);
             request.session().attribute("account_id", account.getId());
@@ -62,9 +61,10 @@ public class Server {
             String accountID = account.getId();
 
             AccountLinkCreateParams createAccountLinkParams = new AccountLinkCreateParams.Builder()
-                    .setAccount(accountID).setType("onboarding")
-                    .setFailureUrl(String.format("%s/onboard-user/refresh", origin))
-                    .setSuccessUrl(String.format("%s/success.html", origin)).build();
+                    .setAccount(accountID)
+                    .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
+                    .setRefreshUrl(String.format("%s/onboard-user/refresh", origin))
+                    .setReturnUrl(String.format("%s/success.html", origin)).build();
 
             AccountLink accountLink = AccountLink.create(createAccountLinkParams);
 
@@ -85,9 +85,10 @@ public class Server {
                 String origin = String.format("http://%s", request.headers("host"));
 
                 AccountLinkCreateParams createAccountLinkParams = new AccountLinkCreateParams.Builder()
-                        .setAccount(sessionAccountId).setType("onboarding")
-                        .setFailureUrl(String.format("%s/onboard-user/refresh", origin))
-                        .setSuccessUrl(String.format("%s/success.html", origin)).build();
+                        .setAccount(sessionAccountId)
+                        .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
+                        .setRefreshUrl(String.format("%s/onboard-user/refresh", origin))
+                        .setReturnUrl(String.format("%s/success.html", origin)).build();
 
                 AccountLink accountLink = AccountLink.create(createAccountLinkParams);
 
