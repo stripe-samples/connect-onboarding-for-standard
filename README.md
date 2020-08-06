@@ -4,9 +4,9 @@ This Stripe sample shows you how to use Connect Onboarding for Standard for seam
 
 ![demo](.readme/demo.png)
 
-Demo url: https://41j2l.sse.codesandbox.io/
+Demo url: https://z032x.sse.codesandbox.io/
 
-Sandbox url: https://codesandbox.io/s/stripe-connect-onboarding-for-standard-41j2l
+Sandbox url: https://codesandbox.io/s/connect-onboarding-for-standard-z032x
 
 ## How to run locally
 
