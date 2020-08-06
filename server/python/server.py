@@ -33,11 +33,7 @@ def get_example():
 
 @app.route('/onboard-user', methods=['POST'])
 def onboard_user():
-    account = stripe.Account.create(
-        type='standard',
-        business_type='individual',
-        country='US'
-    )
+    account = stripe.Account.create(type='standard')
     # Store the account ID.
     session['account_id'] = account.id
 
@@ -63,10 +59,10 @@ def onboard_user_refresh():
 
 def _generate_account_link(account_id, origin):
     account_link = stripe.AccountLink.create(
-        type='onboarding',
+        type='account_onboarding',
         account=account_id,
-        failure_url=f'{origin}/onboard-user/refresh',
-        success_url=f'{origin}/success.html',
+        refresh_url=f'{origin}/onboard-user/refresh',
+        return_url=f'{origin}/success.html',
     )
     return account_link.url
 

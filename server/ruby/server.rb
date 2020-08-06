@@ -27,21 +27,17 @@ end
 post '/onboard-user' do
   content_type 'application/json'
 
-  account = Stripe::Account.create(
-    type: 'standard',
-    business_type: 'individual',
-    country: 'US'
-  )
+  account = Stripe::Account.create(type: 'standard')
 
   session[:account_id] = account.id
 
   origin = request_headers['origin']
 
   account_link = Stripe::AccountLink.create(
-    type: 'onboarding',
+    type: 'account_onboarding',
     account: account.id,
-    failure_url: "#{origin}/onboard-user/refresh",
-    success_url: "#{origin}/success.html"
+    refresh_url: "#{origin}/onboard-user/refresh",
+    return_url: "#{origin}/success.html"
   )
 
   {
@@ -56,10 +52,10 @@ get '/onboard-user/refresh' do
   origin = "http://#{request_headers['host']}"
 
   account_link = Stripe::AccountLink.create(
-    type: 'onboarding',
+    type: 'account_onboarding',
     account: account_id,
-    failure_url: "#{origin}/onboard-user/refresh",
-    success_url: "#{origin}/success.html"
+    refresh_url: "#{origin}/onboard-user/refresh",
+    return_url: "#{origin}/success.html"
   )
 
   redirect account_link.url

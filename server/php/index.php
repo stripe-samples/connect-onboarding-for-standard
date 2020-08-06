@@ -29,18 +29,14 @@ $app->add(function ($request, $response, $next) {
 
 $app->post('/onboard-user', function (Request $request, Response $response, array $args) {
 
-  $account = \Stripe\Account::create([
-    'type' => 'standard',
-    'business_type' => 'individual',
-    'country' => 'US'
-  ]);
+  $account = \Stripe\Account::create(['type' => 'standard']);
 
   session_start();
   $_SESSION['account_id'] = $account->id;
 
   $origin = $request->getHeaderLine('Origin');
   $account_link_url = generate_account_link($account->id, $origin);
-  
+
   return $response->withJson(array('url' => $account_link_url));
 });
 
@@ -52,7 +48,7 @@ $app->get('/onboard-user/refresh', function (Request $request, Response $respons
       ->withStatus(302);
   }
   $account_id = $_SESSION['account_id'];
-  
+
   $origin =
     ($_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://')
     . $request->getHeaderLine('Host');
@@ -66,15 +62,15 @@ $app->get('/onboard-user/refresh', function (Request $request, Response $respons
 
 function generate_account_link(string $account_id, string $origin) {
   $account_link = \Stripe\AccountLink::create([
-    'type' => 'onboarding',
+    'type' => 'account_onboarding',
     'account' => $account_id,
-    'failure_url' => "{$origin}/onboard-user/refresh",
-    'success_url' => "{$origin}/success.html"
+    'refresh_url' => "{$origin}/onboard-user/refresh",
+    'return_url' => "{$origin}/success.html"
   ]);
   return $account_link->url;
 }
 
-$app->get('/', function (Request $request, Response $response, array $args) {   
+$app->get('/', function (Request $request, Response $response, array $args) {
   return $response->write(file_get_contents(getenv('STATIC_DIR') . '/index.html'));
 });
 
