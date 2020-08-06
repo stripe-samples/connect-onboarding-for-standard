@@ -61,7 +61,8 @@ public class Server {
             String accountID = account.getId();
 
             AccountLinkCreateParams createAccountLinkParams = new AccountLinkCreateParams.Builder()
-                    .setAccount(accountID).setType("account_onboarding")
+                    .setAccount(accountID)
+                    .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
                     .setRefreshUrl(String.format("%s/onboard-user/refresh", origin))
                     .setReturnUrl(String.format("%s/success.html", origin)).build();
 
@@ -84,7 +85,8 @@ public class Server {
                 String origin = String.format("http://%s", request.headers("host"));
 
                 AccountLinkCreateParams createAccountLinkParams = new AccountLinkCreateParams.Builder()
-                        .setAccount(sessionAccountId).setType("account_onboarding")
+                        .setAccount(sessionAccountId)
+                        .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
                         .setRefreshUrl(String.format("%s/onboard-user/refresh", origin))
                         .setReturnUrl(String.format("%s/success.html", origin)).build();
 
