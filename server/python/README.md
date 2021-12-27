@@ -1,8 +1,7 @@
-# Name of sample
+# Connect onboarding for Standard accounts
 
 ## Requirements
 * Python 3.6+
-* pipenv
 * [Configured .env file](../README.md)
 
 ## How to run
@@ -21,7 +20,7 @@ pipenv install
 **On Linux / Unix / MacOS**
 
 ```
-pipenv shell
+pip install -r requirements.txt
 export FLASK_APP=server.py
 python3 -m flask run --port=4242
 ```
@@ -29,7 +28,7 @@ python3 -m flask run --port=4242
 **On Windows** (PowerShell)
 
 ```
-pipenv shell
+pip install -r requirements.txt
 $env:FLASK_APP=“server.py"
 python3 -m flask run --port=4242
 ```

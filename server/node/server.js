@@ -4,10 +4,18 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const { resolve } = require("path");
 const session = require("express-session");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = process.env.PORT || 4242;
+
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2020-08-27',
+  appInfo: { // For sample support and debugging, not required for production:
+    name: "stripe-samples/connect-onboarding-for-standard",
+    version: "0.0.1",
+    url: "https://github.com/stripe-samples"
+  }
+});
 
 app.use(express.static(process.env.STATIC_DIR));
 app.use(
@@ -18,15 +26,6 @@ app.use(
   })
 );
 
-// Use JSON parser for all non-webhook routes
-app.use((req, res, next) => {
-  if (req.originalUrl === "/webhook") {
-    next();
-  } else {
-    bodyParser.json()(req, res, next);
-  }
-});
-
 app.get("/", (req, res) => {
   const path = resolve(process.env.STATIC_DIR + "/index.html");
   res.sendFile(path);
@@ -34,12 +33,22 @@ app.get("/", (req, res) => {
 
 app.post("/onboard-user", async (req, res) => {
   try {
-    const account = await stripe.accounts.create({type: "standard"});
+    const account = await stripe.accounts.create({
+      type: 'standard',
+    });
+
+    // Store the ID of the new Standard connected account.
     req.session.accountID = account.id;
 
     const origin = `${req.headers.origin}`;
-    const accountLinkURL = await generateAccountLink(account.id, origin);
-    res.send({ url: accountLinkURL });
+    const accountLink = await stripe.accountLinks.create({
+      type: "account_onboarding",
+      account: account.id,
+      refresh_url: `${origin}/onboard-user/refresh`,
+      return_url: `${origin}/success.html`,
+    });
+
+    res.redirect(303, accountLink.url);
   } catch (err) {
     res.status(500).send({
       error: err.message,
@@ -52,12 +61,19 @@ app.get("/onboard-user/refresh", async (req, res) => {
     res.redirect("/");
     return;
   }
+
   try {
     const { accountID } = req.session;
     const origin = `${req.secure ? "https://" : "https://"}${req.headers.host}`;
 
-    const accountLinkURL = await generateAccountLink(accountID, origin);
-    res.redirect(accountLinkURL);
+    const accountLink = await stripe.accountLinks.create({
+      type: "account_onboarding",
+      account: account.id,
+      refresh_url: `${origin}/onboard-user/refresh`,
+      return_url: `${origin}/success.html`,
+    });
+
+    res.redirect(303, accountLink.url);
   } catch (err) {
     res.status(500).send({
       error: err.message,
@@ -65,15 +81,4 @@ app.get("/onboard-user/refresh", async (req, res) => {
   }
 });
 
-function generateAccountLink(accountID, origin) {
-  return stripe.accountLinks
-    .create({
-      type: "account_onboarding",
-      account: accountID,
-      refresh_url: `${origin}/onboard-user/refresh`,
-      return_url: `${origin}/success.html`,
-    })
-    .then((link) => link.url);
-}
-
-app.listen(port, () => console.log(`Node server listening on port ${port}!`));
+app.listen(port, () => console.log(`Node server listening at http://localhost:${port}!`));

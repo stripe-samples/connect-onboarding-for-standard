@@ -11,16 +11,27 @@ import os
 
 import stripe
 from dotenv import load_dotenv, find_dotenv
-from flask import Flask, jsonify, render_template, redirect, request, session, send_from_directory
+from flask import Flask, jsonify, render_template, redirect, request, session
 
 # Setup Stripe python client library
 load_dotenv(find_dotenv())
+
+# For sample support and debugging, not required for production:
+stripe.set_app_info(
+    'stripe-samples/connect-onboarding-for-standard',
+    version='0.0.1',
+    url='https://github.com/stripe-samples')
+
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
-stripe.api_version = os.getenv('STRIPE_API_VERSION', '2019-12-03')
+stripe.api_version = os.getenv('STRIPE_API_VERSION', '2020-08-27')
+
 
 static_dir = str(os.path.abspath(os.path.join(__file__ , "..", os.getenv("STATIC_DIR"))))
-app = Flask(__name__, static_folder=static_dir,
-            static_url_path="", template_folder=static_dir)
+app = Flask(
+    __name__,
+    static_folder=static_dir,
+    static_url_path="",
+    template_folder=static_dir)
 
 # Set the secret key to some random bytes. Keep this really secret!
 # This enables Flask sessions.
@@ -33,14 +44,21 @@ def get_example():
 
 @app.route('/onboard-user', methods=['POST'])
 def onboard_user():
-    account = stripe.Account.create(type='standard')
-    # Store the account ID.
-    session['account_id'] = account.id
-
     origin = request.headers['origin']
-    account_link_url = _generate_account_link(account.id, origin)
+
     try:
-        return jsonify({'url': account_link_url})
+        account = stripe.Account.create(type='standard')
+
+        # Store the account ID.
+        session['account_id'] = account.id
+
+        account_link = stripe.AccountLink.create(
+            type='account_onboarding',
+            account=account.id,
+            refresh_url=f'{origin}/onboard-user/refresh',
+            return_url=f'{origin}/success.html',
+        )
+        return redirect(account_link.url, code=303)
     except Exception as e:
         return jsonify(error=str(e)), 403
 
@@ -53,19 +71,17 @@ def onboard_user_refresh():
     account_id = session['account_id']
 
     origin = ('https://' if request.is_secure else 'http://') + request.headers['host']
-    account_link_url = _generate_account_link(account_id, origin)
-    return redirect(account_link_url)
-
-
-def _generate_account_link(account_id, origin):
-    account_link = stripe.AccountLink.create(
-        type='account_onboarding',
-        account=account_id,
-        refresh_url=f'{origin}/onboard-user/refresh',
-        return_url=f'{origin}/success.html',
-    )
-    return account_link.url
+    try:
+        account_link = stripe.AccountLink.create(
+            type='account_onboarding',
+            account=account_id,
+            refresh_url=f'{origin}/onboard-user/refresh',
+            return_url=f'{origin}/success.html',
+        )
+        return redirect(account_link_url)
+    except Exception as e:
+        return jsonify(error=str(e)), 403
 
 
 if __name__== '__main__':
-    app.run(port=4242)
+    app.run(port=4242, debug=True)

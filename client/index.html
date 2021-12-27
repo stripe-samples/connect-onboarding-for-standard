@@ -8,23 +8,18 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/global.css" />
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="/script.js" defer></script>
   </head>
 
   <body>
     <div class="sr-root">
       <div class="sr-main">
-        <header class="sr-header">
-          <div class="sr-header__logo"></div>
-        </header>
-
         <div class="sr-payment-summary payment-view">
           <h1 class="order-amount">Setup payouts to list your home on Kavholm</h1>
-        </div>        
-
-          <button id="submit">Setup payouts on Stripe</button>
         </div>
+
+        <form action="/onboard-user" method="POST">
+          <button type="submit">Setup payouts on Stripe</button>
+        </form>
       </div>
     </div>
   </body>

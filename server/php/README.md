@@ -1,9 +1,9 @@
-# Name of sample
+# Connect onboarding for Standard accounts
 
 ## Requirements
+
 * PHP >= 7.1.3
 * Composer
-* [Slim](http://www.slimframework.com/)
 
 ## How to run
 

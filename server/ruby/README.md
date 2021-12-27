@@ -1,4 +1,4 @@
-# Name of sample
+# Connect onboarding for Standard accounts
 
 A [Sinatra](http://sinatrarb.com/) implementation.
 

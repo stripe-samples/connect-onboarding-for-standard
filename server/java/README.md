@@ -1,4 +1,4 @@
-# Name of sample
+# Connect onboarding for Standard accounts
 
 ## Requirements
 
@@ -7,14 +7,14 @@
 
 1. Build the jar
 
-```
+```sh
 mvn package
 ```
 
 2. Run the packaged jar
 
-```
-java -cp target/connect-onboarding-for-standard-1.0.0-SNAPSHOT-jar-with-dependencies.jar com.stripe.sample.Server
+```sh
+java -cp target/sample-jar-with-dependencies.jar com.stripe.sample.Server
 ```
 
 3. Go to `localhost:4242` in your browser to see the demo
