@@ -1,6 +1,6 @@
 {
     "require": {
-        "slim/slim": "^3.12",
+        "slim/slim": "^4.9",
         "vlucas/phpdotenv": "^3.4",
         "stripe/stripe-php": "^6.31",
         "monolog/monolog": "^1.17"
