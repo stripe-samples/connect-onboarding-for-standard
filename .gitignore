@@ -28,3 +28,7 @@ target/
 dist
 
 **/virtual
+
+# Dotnet
+bin/
+obj/
