@@ -64,7 +64,7 @@ app.get("/onboard-user/refresh", async (req, res) => {
 
   try {
     const { accountID } = req.session;
-    const origin = `${req.secure ? "https://" : "https://"}${req.headers.host}`;
+    const origin = `${req.secure ? "https://" : "http://"}${req.headers.host}`;
 
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
