@@ -68,7 +68,7 @@ app.get("/onboard-user/refresh", async (req, res) => {
 
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
-      account: account.id,
+      account: accountID,
       refresh_url: `${origin}/onboard-user/refresh`,
       return_url: `${origin}/success.html`,
     });
