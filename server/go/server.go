@@ -1,16 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/stripe/stripe-go/v72"
 	"github.com/stripe/stripe-go/v72/account"
 	"github.com/stripe/stripe-go/v72/accountlink"
-	"github.com/gorilla/sessions"
 )
 
 // Set this to a random string that is kept secure
@@ -43,33 +42,32 @@ func handleOnboardUser(w http.ResponseWriter, r *http.Request) {
 	// Create account
 	accountParams := &stripe.AccountParams{
 		Type: stripe.String(string(stripe.AccountTypeStandard)),
-	  };
-	accountDetails, _ := account.New(accountParams);
-	accountID := accountDetails.ID;
+	}
+	accountDetails, _ := account.New(accountParams)
+	accountID := accountDetails.ID
 
 	// Store the accountID in the session
-	session, _ := store.Get(r, "account-link-session");
-	session.Values["accountID"] = accountID;
-	err := session.Save(r, w);
-
+	session, _ := store.Get(r, "account-link-session")
+	session.Values["accountID"] = accountID
+	err := session.Save(r, w)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	origin := r.Header.Get("Origin");
-	refreshUrl := origin + "/onboard-user/refresh";
-	returnUrl := origin + "/success.html";
+	origin := r.Header.Get("Origin")
+	refreshURL := origin + "/onboard-user/refresh"
+	returnURL := origin + "/success.html"
 
 	// Create account link
 	accountLinkParams := &stripe.AccountLinkParams{
-		Account: stripe.String(string(accountID)),
-		RefreshURL: stripe.String(refreshUrl),
-		ReturnURL: stripe.String(returnUrl),
-		Type: stripe.String("account_onboarding"),
-	};
-	result, err := accountlink.New(accountLinkParams);
+		Account:    stripe.String(string(accountID)),
+		RefreshURL: stripe.String(refreshURL),
+		ReturnURL:  stripe.String(returnURL),
+		Type:       stripe.String("account_onboarding"),
+	}
+	result, err := accountlink.New(accountLinkParams)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -81,36 +79,36 @@ func handleOnboardUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleOnboardUserRefresh(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "account-link-session");
+	session, _ := store.Get(r, "account-link-session")
 	var origin string
-	
-	if (r.TLS == nil) {
+
+	if r.TLS == nil {
 		origin = "http://" + r.Host
 	} else {
 		origin = "https://" + r.Host
 	}
 
-	refreshUrl := origin + "/onboard-user/refresh";
-	returnUrl := origin + "/success.html";
-	
+	refreshURL := origin + "/onboard-user/refresh"
+	returnURL := origin + "/success.html"
+
 	if session.Values["accountID"] != nil {
 		accountLinkParams := &stripe.AccountLinkParams{
-			Account: stripe.String(string(fmt.Sprint(session.Values["accountID"]))),
-			RefreshURL: stripe.String(refreshUrl),
-			ReturnURL: stripe.String(returnUrl),
-			Type: stripe.String("account_onboarding"),
-		};
-		result, err := accountlink.New(accountLinkParams);
+			Account:    stripe.String(session.Values["accountID"].(string)),
+			RefreshURL: stripe.String(refreshURL),
+			ReturnURL:  stripe.String(returnURL),
+			Type:       stripe.String("account_onboarding"),
+		}
+		result, err := accountlink.New(accountLinkParams)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-	
+
 		http.Redirect(w, r, result.URL, 303)
 		return
 	}
 
-	http.Redirect(w, r, "/", 303);
+	http.Redirect(w, r, "/", 303)
 	return
 }
