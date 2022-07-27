@@ -22,6 +22,7 @@ jobs:
            contains(steps.metadata.outputs.dependency-names, 'Stripe.net') ||
            contains(steps.metadata.outputs.dependency-names, 'stripe/stripe-php') ||
            contains(steps.metadata.outputs.dependency-names, 'stripe') ||
+           steps.metadata.outputs.dependency-name == 'com.stripe:stripe-java' ||
            contains(steps.metadata.outputs.dependency-names, 'com.stripe:stripe-java'))
         run: gh pr merge --auto --merge "$PR_URL"
         env:
