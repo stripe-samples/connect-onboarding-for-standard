@@ -10,24 +10,28 @@ updates:
     directory: "/server/ruby/"
     schedule:
       interval: "weekly"
+      day: "thursday"
 
   # python dependencies
   - package-ecosystem: "pip"
     directory: "/server/python/"
     schedule:
       interval: "weekly"
+      day: "thursday"
 
   # php dependencies
   - package-ecosystem: "composer"
     directory: "/server/php/"
     schedule:
       interval: "weekly"
+      day: "thursday"
 
   # node dependencies
   - package-ecosystem: "npm"
     directory: "/server/node/"
     schedule:
       interval: "weekly"
+      day: "thursday"
 
   # go dependencies
   - package-ecosystem: "gomod"
@@ -40,9 +44,11 @@ updates:
     directory: "/server/java/"
     schedule:
       interval: "weekly"
+      day: "thursday"
 
   # dotnet dependencies
   - package-ecosystem: "nuget"
     directory: "/server/dotnet/"
     schedule:
       interval: "weekly"
+      day: "thursday"
