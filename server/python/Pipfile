@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 certifi = "==2022.5.18.1"
-chardet = "==4.0.0"
+chardet = "==5.0.0"
 click = "==7.1.2"
 idna = "==3.3"
 itsdangerous = "==1.1.0"
