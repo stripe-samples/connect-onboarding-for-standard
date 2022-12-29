@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b4caa164a423b32aedcdbb218e07f065",
+    "content-hash": "7ef176ace8fe373d2aab36fe0b5ac9b0",
     "packages": [
         {
             "name": "graham-campbell/result-type",
@@ -145,16 +145,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v9.9.0",
+            "version": "v10.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "479b5c2136fde0debb93d290ceaf20dd161c358f"
+                "reference": "417d66a5b27a5ec53a706a346b05bfe170043d52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/479b5c2136fde0debb93d290ceaf20dd161c358f",
-                "reference": "479b5c2136fde0debb93d290ceaf20dd161c358f",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/417d66a5b27a5ec53a706a346b05bfe170043d52",
+                "reference": "417d66a5b27a5ec53a706a346b05bfe170043d52",
                 "shasum": ""
             },
             "require": {
@@ -200,9 +200,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v9.9.0"
+                "source": "https://github.com/stripe/stripe-php/tree/v10.3.0"
             },
-            "time": "2022-11-08T20:25:52+00:00"
+            "time": "2022-12-22T20:07:30+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
