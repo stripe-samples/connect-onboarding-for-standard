@@ -78,7 +78,7 @@ def onboard_user_refresh():
             refresh_url=f'{origin}/onboard-user/refresh',
             return_url=f'{origin}/success.html',
         )
-        return redirect(account_link_url)
+        return redirect(account_link.url)
     except Exception as e:
         return jsonify(error=str(e)), 403
 

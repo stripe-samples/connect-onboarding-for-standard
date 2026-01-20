@@ -8,6 +8,6 @@ Jinja2==3.0.3
 MarkupSafe==2.0.1
 python-dotenv==0.19.2
 requests==2.26.0
-stripe==2.64.0
+stripe==14.2.0
 urllib3==1.26.7
 Werkzeug==2.0.2
