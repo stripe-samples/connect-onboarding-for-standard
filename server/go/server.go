@@ -7,9 +7,9 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
-	"github.com/stripe/stripe-go/v72"
-	"github.com/stripe/stripe-go/v72/account"
-	"github.com/stripe/stripe-go/v72/accountlink"
+	"github.com/stripe/stripe-go/v84"
+	"github.com/stripe/stripe-go/v84/account"
+	"github.com/stripe/stripe-go/v84/accountlink"
 )
 
 // Set this to a random string that is kept secure
