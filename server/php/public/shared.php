@@ -9,6 +9,11 @@ if(!file_exists('../.env')) {
   ?>
   <p>Make a copy of <code>.env.example</code>, place it in the same directory as composer.json, and name it <code>.env</code>, then populate the variables.</p>
   <p>It should look something like the following, but contain your <a href='https://dashboard.stripe.com/test/apikeys'>API keys</a>:</p>
+  <pre>Don't put any keys in code. Use an environment variable (as shown
+here) or secrets vault to supply keys to your integration.
+
+See https://docs.stripe.com/keys-best-practices and find your
+keys at https://dashboard.stripe.com/apikeys.</pre>
   <pre>STRIPE_SECRET_KEY=sk_test...</pre>
   <hr>
 
